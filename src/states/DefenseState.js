@@ -65,6 +65,17 @@ class DefenseState extends React.Component {
                 clearTimeout(this.timer);
                 clearInterval(this.timerUpdate);
             }
+        } else {
+            this.timer = setTimeout(
+                () => {
+                    this.onTileClicked({target:{name:this.state.lastDraw}});
+                    this.setState({
+                        currentBonus: 0
+                    });
+                },
+                (this.state.settings.time + this.state.settings.extraTime + 2) * 1000
+            );
+            this.timerUpdate = setInterval(this.updateTime, 100);
         }
 
         this.setState({
