@@ -4,6 +4,9 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/ios": "^6.1.2",
     "bootstrap": "^4.5.3",
     "cross-env": "^5.2.1",
     "i18next": "^17.3.1",
@@ -33,5 +36,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2"
+  }
 }
