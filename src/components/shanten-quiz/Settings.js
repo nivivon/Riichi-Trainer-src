@@ -14,6 +14,7 @@ class Settings extends React.Component {
             collapsed: true,
             settings: {
                 useTimer: false,
+                showIndexes: false,
                 time: DEFAULT_TIME,
             }
         };
@@ -33,6 +34,7 @@ class Settings extends React.Component {
 
                 let settings = {
                     useTimer: savedSettings.useTimer,
+                    showIndexes: savedSettings.showIndexes,
                     time: savedSettings.time || DEFAULT_TIME,
                 }
 
@@ -93,6 +95,13 @@ class Settings extends React.Component {
                                     min={1} max={99} step={1}
                                     value={this.state.settings.time} onChange={this.onSettingChanged} />
                                 <span className="blackText">&nbsp;{t("settings.seconds")}</span>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className="form-check form-check-inline">
+                                <Input className="form-check-input" type="checkbox" id="showIndexes"
+                                    checked={this.state.settings.showIndexes} onChange={this.onSettingChanged} />
+                                <Label className="form-check-label" for="showIndexes">{t("settings.showIndexes")}</Label>
                             </Col>
                         </Row>
                     </CardBody></Card>

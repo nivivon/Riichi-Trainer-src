@@ -148,7 +148,7 @@ class ShantenQuiz extends React.Component {
                 <Row className="mb-2 mt-2">
                     <span>{t("shanten.instructions")}</span>
                 </Row>
-                <Hand tiles={this.state.hand} showIndexes={true} />
+                <Hand tiles={this.state.hand} showIndexes={this.state.settings.showIndexes} />
                 <Row className="mt-2">
                     <Col xs="6" sm="3" md="3" lg="2">
                         <Button className="btn-block" color="warning" onClick={() => this.onNewHand()}>{t("shanten.newHandButtonLabel")}</Button>
