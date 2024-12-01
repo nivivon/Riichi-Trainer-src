@@ -159,7 +159,8 @@ export const en = {
             explorer: "Explorer",
             utils: "Misc. Utils",
             language: "Language",
-            defense: "Folding"
+            defense: "Folding",
+            shanten: "Shanten"
         },
         allLast: {
             placements: {
