@@ -287,7 +287,10 @@ export const en = {
         },
         shanten: {
             instructions: "Looking to improve your speed at calculating shanten? This tool will help you practice.",
-            shantenLabel: "Shanten:"
+            "newHandButtonLabel": "New Hand",
+            "guessPlaceholder": "Your guess",
+            "submitGuessButtonLabel": "Submit Guess",
+            historyLabel: "History"
         },
         utils: {
             convertHeader: "Hand Conversion",

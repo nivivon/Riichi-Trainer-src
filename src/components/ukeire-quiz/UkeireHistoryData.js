@@ -1,5 +1,6 @@
 import { getTileAsText } from "../../scripts/TileConversions";
 import HistoryData from "../../models/HistoryData";
+import { CSS_CLASSES } from "../../Constants";
 
 export default class UkeireHistoryData extends HistoryData {
     /** A history object for the ukeire trainer, which tells the efficiency of a given discard. */
@@ -71,13 +72,13 @@ export default class UkeireHistoryData extends HistoryData {
         let className = "";
 
         if (this.chosenUkeire.value <= 0 && this.shanten > 0) {
-            className = "bg-danger text-white";
+            className = CSS_CLASSES.INCORRECT;
         }
         else if (this.bestUkeire === this.chosenUkeire.value) {
-            className = "bg-success text-white";
+            className = CSS_CLASSES.CORRECT;
         }
         else {
-            className = "bg-warning";
+            className = CSS_CLASSES.WARNING;
         }
 
         return className;

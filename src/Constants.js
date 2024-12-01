@@ -78,3 +78,9 @@ export const TSUMO_SCORES = [
 export const PLACEMENTS = [
     "allLast.placements.fourth", "allLast.placements.third", "allLast.placements.second", "allLast.placements.first"
 ];
+
+export const CSS_CLASSES = {
+    INCORRECT: "bg-danger text-white",
+    CORRECT: "bg-success text-white",
+    WARNING: "bg-warning",
+};
