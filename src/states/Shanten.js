@@ -1,24 +1,33 @@
 import React from 'react';
 import { Container, Row, Button, Col, Input, InputGroup, InputGroupAddon, ListGroup, ListGroupItem, ListGroupItemHeading } from 'reactstrap';
 import Hand from '../components/Hand';
+import Settings from '../components/shanten-quiz/Settings';
 import { generateHand } from '../scripts/GenerateHand';
 import { calculateMinimumShanten } from "../scripts/ShantenCalculator";
 import { convertHandToTileIndexArray } from "../scripts/HandConversions";
 import { shuffleArray } from '../scripts/Utils';
 import { withTranslation } from 'react-i18next';
-import { CSS_CLASSES  } from '../Constants';
+import { CSS_CLASSES } from '../Constants';
 
 class ShantenQuiz extends React.Component {
     constructor(props) {
         super(props);
-        this.onNewHand = this.onNewHand.bind(this);
+        this.onSettingsChanged = this.onSettingsChanged.bind(this);
         this.onSubmitGuess = this.onSubmitGuess.bind(this);
+        this.updateTime = this.onUpdateTime.bind(this);
+        this.timerUpdate = null;
+        this.timer = null;
         this.state = {
             hand: null,
             shanten: null,
             shuffle: [],
             guess: '',
             history: [],
+            settings: {
+                useTimer: false,
+                time: 10,
+            },
+            currentTime: 0,
         };
     }
 
@@ -26,8 +35,33 @@ class ShantenQuiz extends React.Component {
         this.onNewHand();
     }
 
+    componentWillUnmount() {
+        if (this.timer != null) {
+            clearTimeout(this.timer);
+            clearInterval(this.timerUpdate);
+        }
+    }
+
+    onSettingsChanged(settings) {
+        if (!settings.useTimer) {
+            if (this.timer != null) {
+                clearTimeout(this.timer);
+                clearInterval(this.timerUpdate);
+            }
+        }
+
+        this.setState({
+            settings: settings
+        });
+    }
+
     /** Generates a new hand and calculates its shanten. */
     onNewHand() {
+        if (this.timer != null) {
+            clearTimeout(this.timer);
+            clearInterval(this.timerUpdate);
+        }
+
         let remainingTiles = this.getStartingTiles();
         let generationResult = generateHand(remainingTiles);
         let hand = generationResult.hand;
@@ -42,7 +76,18 @@ class ShantenQuiz extends React.Component {
             shanten: shanten,
             shuffle: shuffle,
             guess: '',
+            currentTime: this.state.settings.time,
         });
+
+        if (this.state.settings.useTimer) {
+            this.timer = setTimeout(
+                () => {
+                    this.onSubmitGuess();
+                },
+                (this.state.settings.time) * 1000
+            );
+            this.timerUpdate = setInterval(this.updateTime, 100);
+        }
     }
 
     /**
@@ -63,21 +108,43 @@ class ShantenQuiz extends React.Component {
         return availableTiles;
     }
 
+    getHistoryClassName(guess, shanten) {
+        return parseInt(guess) === shanten ? CSS_CLASSES.CORRECT : CSS_CLASSES.INCORRECT
+    }
+
+    getHistoryMessage(guess, shanten) {
+        if (!guess) {
+            return `You did not enter a guess. It was ${shanten}.`;
+        }
+
+        return `You guessed ${guess} shanten. It was ${shanten}.`;
+    }
+
     /** Handles the user's guess submission. */
     onSubmitGuess() {
         let { guess, shanten, history } = this.state;
-
-        const className = parseInt(guess) === shanten ? CSS_CLASSES.CORRECT : CSS_CLASSES.INCORRECT;
-        history.unshift({ text: `You guessed ${guess} shanten. It was ${shanten}.`, className });
+        let className = this.getHistoryClassName(guess, shanten);
+        const text = this.getHistoryMessage(guess, shanten);
+        history.unshift({ text: text, className });
         this.setState({ history });
         this.onNewHand();
     }
 
+    onUpdateTime() {
+        if (this.state.currentTime > 0.1) {
+            this.setState({
+                currentTime: Math.max(this.state.currentTime - 0.1, 0)
+            });
+        }
+    }
+
     render() {
         let { t } = this.props;
+        const currentTime = this.state.currentTime || 0;
 
         return (
             <Container>
+                <Settings onChange={this.onSettingsChanged} />
                 <Row className="mb-2 mt-2">
                     <span>{t("shanten.instructions")}</span>
                 </Row>
@@ -97,6 +164,10 @@ class ShantenQuiz extends React.Component {
                         </InputGroup>
                     </Col>
                 </Row>
+                {this.state.settings.useTimer ?
+                    <Row className="mt-2" style={{ justifyContent: 'flex-end', marginRight: 1 }}><span>{currentTime.toFixed(1)}</span></Row>
+                    : ""
+                }
                 <ListGroup className="mt-2">
                     <ListGroupItemHeading><span>{t("shanten.historyLabel")}</span></ListGroupItemHeading>
                     {this.state.history.map((entry, index) => (
