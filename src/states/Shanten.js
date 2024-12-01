@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Row, Button, Col, Input, InputGroup, InputGroupAddon, ListGroup, ListGroupItem, ListGroupItemHeading } from 'reactstrap';
 import Hand from '../components/Hand';
 import Settings from '../components/shanten-quiz/Settings';
+import StatsDisplay from '../components/shanten-quiz/StatsDisplay';
 import { generateHand } from '../scripts/GenerateHand';
 import { calculateMinimumShanten } from "../scripts/ShantenCalculator";
 import { convertHandToTileIndexArray } from "../scripts/HandConversions";
@@ -15,6 +16,7 @@ class ShantenQuiz extends React.Component {
         this.onSettingsChanged = this.onSettingsChanged.bind(this);
         this.onSubmitGuess = this.onSubmitGuess.bind(this);
         this.updateTime = this.onUpdateTime.bind(this);
+        this.resetStats = this.resetStats.bind(this);
         this.timerUpdate = null;
         this.timer = null;
         this.state = {
@@ -28,6 +30,11 @@ class ShantenQuiz extends React.Component {
                 time: 10,
             },
             currentTime: 0,
+            stats: {
+                correctGuesses: 0,
+                totalGuesses: 0,
+                totalTime: 0,
+            }
         };
     }
 
@@ -122,11 +129,22 @@ class ShantenQuiz extends React.Component {
 
     /** Handles the user's guess submission. */
     onSubmitGuess() {
-        let { guess, shanten, history } = this.state;
-        let className = this.getHistoryClassName(guess, shanten);
+        let { guess, shanten, history, stats, currentTime } = this.state;
+        const className = this.getHistoryClassName(guess, shanten);
         const text = this.getHistoryMessage(guess, shanten);
-        history.unshift({ text: text, className });
-        this.setState({ history });
+        history.unshift({ text, className });
+
+        stats.totalGuesses += 1;
+
+        if (this.state.settings.useTimer) {
+            stats.totalTime += this.state.settings.time - currentTime;
+        }
+
+        if (parseInt(guess) === shanten) {
+            stats.correctGuesses += 1;
+        }
+
+        this.setState({ history, stats });
         this.onNewHand();
     }
 
@@ -138,6 +156,16 @@ class ShantenQuiz extends React.Component {
         }
     }
 
+    resetStats() {
+        this.setState({
+            stats: {
+                correctGuesses: 0,
+                totalGuesses: 0,
+                totalTime: 0,
+            }
+        });
+    }
+
     render() {
         let { t } = this.props;
         const currentTime = this.state.currentTime || 0;
@@ -145,6 +173,7 @@ class ShantenQuiz extends React.Component {
         return (
             <Container>
                 <Settings onChange={this.onSettingsChanged} />
+                <StatsDisplay values={this.state.stats} onReset={this.resetStats} useTimer={this.state.settings.useTimer} />
                 <Row className="mb-2 mt-2">
                     <span>{t("shanten.instructions")}</span>
                 </Row>

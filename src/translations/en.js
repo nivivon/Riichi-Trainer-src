@@ -290,7 +290,16 @@ export const en = {
             "newHandButtonLabel": "New Hand",
             "guessPlaceholder": "Your guess",
             "submitGuessButtonLabel": "Submit Guess",
-            historyLabel: "History"
+            historyLabel: "History",
+            stats: {
+                buttonLabel: "Statistics",
+                correctGuesses: "Correct Guesses: {{count}} / {{total}} ({{percent}}%)",
+                averageTime: "Average Time: {{time}} seconds",
+                reset: "Reset Stats",
+                confirmation: "Are you sure you want to reset the stats?",
+                yes: "Yes",
+                no: "No",
+            },
         },
         utils: {
             convertHeader: "Hand Conversion",
