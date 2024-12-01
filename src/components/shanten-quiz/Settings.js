@@ -15,6 +15,7 @@ class Settings extends React.Component {
             settings: {
                 useTimer: false,
                 showIndexes: false,
+                showHandInHistory: false,
                 time: DEFAULT_TIME,
             }
         };
@@ -35,6 +36,7 @@ class Settings extends React.Component {
                 let settings = {
                     useTimer: savedSettings.useTimer,
                     showIndexes: savedSettings.showIndexes,
+                    showHandInHistory: savedSettings.showHandInHistory,
                     time: savedSettings.time || DEFAULT_TIME,
                 }
 
@@ -102,6 +104,13 @@ class Settings extends React.Component {
                                 <Input className="form-check-input" type="checkbox" id="showIndexes"
                                     checked={this.state.settings.showIndexes} onChange={this.onSettingChanged} />
                                 <Label className="form-check-label" for="showIndexes">{t("settings.showIndexes")}</Label>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className="form-check form-check-inline">
+                                <Input className="form-check-input" type="checkbox" id="showHandInHistory"
+                                    checked={this.state.settings.showHandInHistory} onChange={this.onSettingChanged} />
+                                <Label className="form-check-label" for="showHandInHistory">{t("settings.shanten.showHandInHistory")}</Label>
                             </Col>
                         </Row>
                     </CardBody></Card>

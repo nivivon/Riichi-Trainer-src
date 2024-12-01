@@ -119,7 +119,10 @@ export const en = {
             useTimer: "Use timer",
             time: "Time per discard:",
             extraTime: "Bonus time per hand:",
-            seconds: "seconds"
+            seconds: "seconds",
+            shanten: {
+                showHandInHistory: "Show Hand in History"
+            }
         },
         stats: {
             buttonLabel: "Statistics",
@@ -290,7 +293,9 @@ export const en = {
             "newHandButtonLabel": "New Hand",
             "guessPlaceholder": "Your guess",
             "submitGuessButtonLabel": "Submit Guess",
-            historyLabel: "History",
+            history: {
+                buttonLabel: "History",
+            },
             stats: {
                 buttonLabel: "Statistics",
                 correctGuesses: "Correct Guesses: {{count}} / {{total}} ({{percent}}%)",

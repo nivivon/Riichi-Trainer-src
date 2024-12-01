@@ -27,6 +27,8 @@ class ShantenQuiz extends React.Component {
             history: [],
             settings: {
                 useTimer: false,
+                showIndexes: false,
+                showHandInHistory: false,
                 time: 10,
             },
             currentTime: 0,
@@ -129,10 +131,10 @@ class ShantenQuiz extends React.Component {
 
     /** Handles the user's guess submission. */
     onSubmitGuess() {
-        let { guess, shanten, history, stats, currentTime } = this.state;
+        let { guess, shanten, hand, history, stats, currentTime } = this.state;
         const className = this.getHistoryClassName(guess, shanten);
         const text = this.getHistoryMessage(guess, shanten);
-        history.unshift({ text, className });
+        history.unshift({ text, className, hand });
 
         stats.totalGuesses += 1;
 
@@ -198,9 +200,12 @@ class ShantenQuiz extends React.Component {
                     : ""
                 }
                 <ListGroup className="mt-2">
-                    <ListGroupItemHeading><span>{t("shanten.historyLabel")}</span></ListGroupItemHeading>
+                    <ListGroupItemHeading><span>{t("shanten.history.buttonLabel")}</span></ListGroupItemHeading>
                     {this.state.history.map((entry, index) => (
-                        <ListGroupItem key={index} className={entry.className}>{entry.text}</ListGroupItem>
+                        <ListGroupItem key={index} className={entry.className}>
+                            {entry.text}
+                            {this.state.settings.showHandInHistory && <Hand tiles={entry.hand} showIndexes={this.state.settings.showIndexes} />}
+                        </ListGroupItem>
                     ))}
                 </ListGroup>
             </Container>
