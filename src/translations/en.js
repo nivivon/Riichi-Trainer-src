@@ -285,6 +285,10 @@ export const en = {
             minTurns: "Minimum turns before a riichi is declared: ",
             tilesInHand: "Number of tiles in hand: "
         },
+        shanten: {
+            instructions: "Looking to improve your speed at calculating shanten? This tool will help you practice.",
+            shantenLabel: "Shanten:"
+        },
         utils: {
             convertHeader: "Hand Conversion",
             convertButtonLabel: "Convert Hand",
