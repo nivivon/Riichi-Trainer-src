@@ -119,7 +119,10 @@ export const en = {
             useTimer: "Use timer",
             time: "Time per discard:",
             extraTime: "Bonus time per hand:",
-            seconds: "seconds"
+            seconds: "seconds",
+            shanten: {
+                showHandInHistory: "Show Hand in History"
+            }
         },
         stats: {
             buttonLabel: "Statistics",
@@ -159,7 +162,8 @@ export const en = {
             explorer: "Explorer",
             utils: "Misc. Utils",
             language: "Language",
-            defense: "Folding"
+            defense: "Folding",
+            shanten: "Shanten"
         },
         allLast: {
             placements: {
@@ -283,6 +287,24 @@ export const en = {
             riichiCount: "Number of riichis: ",
             minTurns: "Minimum turns before a riichi is declared: ",
             tilesInHand: "Number of tiles in hand: "
+        },
+        shanten: {
+            instructions: "Looking to improve your speed at calculating shanten? This tool will help you practice.",
+            "newHandButtonLabel": "New Hand",
+            "guessPlaceholder": "Your guess",
+            "submitGuessButtonLabel": "Submit Guess",
+            history: {
+                buttonLabel: "History",
+            },
+            stats: {
+                buttonLabel: "Statistics",
+                correctGuesses: "Correct Guesses: {{count}} / {{total}} ({{percent}}%)",
+                averageTime: "Average Time: {{time}} seconds",
+                reset: "Reset Stats",
+                confirmation: "Are you sure you want to reset the stats?",
+                yes: "Yes",
+                no: "No",
+            },
         },
         utils: {
             convertHeader: "Hand Conversion",
