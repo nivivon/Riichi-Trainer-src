@@ -23,6 +23,9 @@ class DefenseState extends React.Component {
         super(props);
         this.onTileClicked = this.onTileClicked.bind(this);
         this.onSettingsChanged = this.onSettingsChanged.bind(this);
+        this.updateTime = this.onUpdateTime.bind(this);
+        this.timerUpdate = null;
+        this.timer = null;
         this.state = {
             lastDraw: 0,
             isComplete: false,
@@ -38,7 +41,9 @@ class DefenseState extends React.Component {
                 numberOfRiichis: 1,
                 minimumTurnsBeforeRiichi: 4,
                 tilesInHand: 13,
-            }
+            },
+            currentTime: 0,
+            currentBonus: 0,
         }
     }
 
@@ -47,7 +52,32 @@ class DefenseState extends React.Component {
         this.setState({}, () => this.onNewHand());
     }
 
+    componentWillUnmount() {
+        if (this.timer != null) {
+            clearTimeout(this.timer);
+            clearInterval(this.timerUpdate);
+        }
+    }
+
     onSettingsChanged(settings) {
+        if (!settings.useTimer) {
+            if (this.timer != null) {
+                clearTimeout(this.timer);
+                clearInterval(this.timerUpdate);
+            }
+        } else {
+            this.timer = setTimeout(
+                () => {
+                    this.onTileClicked({target:{name:this.state.lastDraw}});
+                    this.setState({
+                        currentBonus: 0
+                    });
+                },
+                (this.state.settings.time + this.state.settings.extraTime + 2) * 1000
+            );
+            this.timerUpdate = setInterval(this.updateTime, 100);
+        }
+
         this.setState({
             settings: settings
         });
@@ -55,6 +85,11 @@ class DefenseState extends React.Component {
 
     /** Generates a fresh game state. */
     onNewHand() {
+        if (this.timer != null) {
+            clearTimeout(this.timer);
+            clearInterval(this.timerUpdate);
+        }
+
         /** @type {Player[]} */
         let players = [];
         let tilePool = [];
@@ -202,15 +237,33 @@ class DefenseState extends React.Component {
             removeRandomItem(tilePool);
         }
 
+        let shuffle = convertHandToTileIndexArray(players[0].hand);
+        shuffle = shuffleArray(shuffle);
+
         this.setState({
             players: players,
             tilePool: tilePool,
             history: [new HistoryData(new LocalizedMessage("trainer.start", { hand: convertHandToTenhouString(players[0].hand) }))],
             discardCount: 0,
             dora: dora,
-            lastDraw: -1,
-            isComplete: false
+            lastDraw: shuffle.pop(),
+            isComplete: false,
+            currentTime: this.state.settings.time + 2,
+            currentBonus: this.state.settings.extraTime
         });
+
+        if (this.state.settings.useTimer) {
+            this.timer = setTimeout(
+                () => {
+                    this.onTileClicked({target:{name:this.state.lastDraw}});
+                    this.setState({
+                        currentBonus: 0
+                    });
+                },
+                (this.state.settings.time + this.state.settings.extraTime + 2) * 1000
+            );
+            this.timerUpdate = setInterval(this.updateTime, 100);
+        }
     }
 
     /**
@@ -370,6 +423,11 @@ class DefenseState extends React.Component {
     }
 
     onTileClicked(event) {
+        if (this.timer != null) {
+            clearTimeout(this.timer);
+            clearInterval(this.timerUpdate);
+        }
+
         let { t } = this.props;
         let isComplete = this.state.isComplete;
         if (isComplete) return;
@@ -416,6 +474,17 @@ class DefenseState extends React.Component {
         } else {
             draw = removeRandomItem(tilePool);
             players[0].hand[draw]++;
+
+            this.timer = setTimeout(
+                () => {
+                    this.onTileClicked({target:{name:this.state.lastDraw}});
+                    this.setState({
+                        currentBonus: 0
+                    });
+                },
+                (this.state.settings.time + this.state.currentBonus) * 1000
+            );
+            this.timerUpdate = setInterval(this.updateTime, 100);
         }
 
         let bestSafety = Math.max(...averageSafety);
@@ -435,8 +504,21 @@ class DefenseState extends React.Component {
             discardCount: this.state.discardCount + 1,
             lastDraw: draw,
             history: history,
-            isComplete: isComplete
+            isComplete: isComplete,
+            currentTime: this.state.settings.time,
         });
+    }
+
+    onUpdateTime() {
+        if (this.state.currentTime > 0.1) {
+            this.setState({
+                currentTime: Math.max(this.state.currentTime - 0.1, 0)
+            });
+        } else {
+            this.setState({
+                currentBonus: Math.max(this.state.currentBonus - 0.1, 0)
+            });
+        }
     }
 
     /**
@@ -492,6 +574,10 @@ class DefenseState extends React.Component {
                                 <Button className="btn-block" color={this.state.isComplete ? "success" : "warning"} onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
                             </Col>
                         </Row>
+                        {this.state.settings.useTimer ?
+                        <Row className="mt-2" style={{justifyContent:'flex-end', marginRight:1}}><span>{this.state.currentTime.toFixed(1)} + {this.state.currentBonus.toFixed(1)}</span></Row>
+                            : ""
+                        }
                         <Row className="mt-2 no-gutters">
                             <History history={this.state.history} concise={true} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers} />
                             <DiscardPool players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} />

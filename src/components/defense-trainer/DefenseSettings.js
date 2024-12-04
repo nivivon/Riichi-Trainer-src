@@ -15,6 +15,9 @@ class Settings extends React.Component {
                 numberOfRiichis: 1,
                 minimumTurnsBeforeRiichi: 5,
                 tilesInHand: 13,
+                useTimer: false,
+                time: 5,
+                extraTime: 10,
             }
         };
 
@@ -37,6 +40,9 @@ class Settings extends React.Component {
                     numberOfRiichis: savedSettings.numberOfRiichis || 1,
                     minimumTurnsBeforeRiichi: savedSettings.minimumTurnsBeforeRiichi || 4,
                     tilesInHand: savedSettings.tilesInHand || 13,
+                    useTimer: savedSettings.useTimer,
+                    time: savedSettings.time || 5,
+                    extraTime: savedSettings.extraTime === undefined ? 10 : savedSettings.extraTime
                 }
 
                 this.setState({
@@ -118,6 +124,31 @@ class Settings extends React.Component {
                                 <NumericInput className="form-check-input" type="number" id="tilesInHand"
                                     min={2} max={14} step={3}
                                     value={this.state.settings.tilesInHand} onChange={this.onSettingChanged} />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className="form-check form-check-inline">
+                                <Input className="form-check-input" type="checkbox" id="useTimer"
+                                    checked={this.state.settings.useTimer} onChange={this.onSettingChanged} />
+                                <Label className="form-check-label" for="useTimer">{t("settings.useTimer")}</Label>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className="form-check form-check-inline">
+                                <Label className="form-check-label" for="time">{t("settings.time")}&nbsp;</Label>
+                                <NumericInput className="form-check-input" type="number" id="time"
+                                    min={1} max={99} step={1}
+                                    value={this.state.settings.time} onChange={this.onSettingChanged} />
+                                <span className="blackText">&nbsp;{t("settings.seconds")}</span>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className="form-check form-check-inline">
+                                <Label className="form-check-label" for="time">{t("settings.extraTime")}&nbsp;</Label>
+                                <NumericInput className="form-check-input" type="number" id="extraTime"
+                                    min={0} max={99} step={1}
+                                    value={this.state.settings.extraTime} onChange={this.onSettingChanged} />
+                                <span className="blackText">&nbsp;{t("settings.seconds")}</span>
                             </Col>
                         </Row>
                     </CardBody></Card>
