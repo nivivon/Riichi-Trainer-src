@@ -475,16 +475,18 @@ class DefenseState extends React.Component {
             draw = removeRandomItem(tilePool);
             players[0].hand[draw]++;
 
-            this.timer = setTimeout(
-                () => {
-                    this.onTileClicked({target:{name:this.state.lastDraw}});
-                    this.setState({
-                        currentBonus: 0
-                    });
-                },
-                (this.state.settings.time + this.state.currentBonus) * 1000
-            );
-            this.timerUpdate = setInterval(this.updateTime, 100);
+            if (this.state.settings.useTimer) {
+                this.timer = setTimeout(
+                    () => {
+                        this.onTileClicked({target:{name:this.state.lastDraw}});
+                        this.setState({
+                            currentBonus: 0
+                        });
+                    },
+                    (this.state.settings.time + this.state.currentBonus) * 1000
+                );
+                this.timerUpdate = setInterval(this.updateTime, 100);
+            }
         }
 
         let bestSafety = Math.max(...averageSafety);
